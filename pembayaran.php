@@ -1,23 +1,25 @@
 <?php
+#Penggunaan Abstrak Class
 abstract class Pembayaran {
     protected $jumlah;
-    
+
     public function __construct($jumlah) {
         $this->jumlah = $jumlah;
     }
 
+    // method wajib
     abstract public function prosesPembayaran();
 
+    // method umum
     public function validasi() {
         return $this->jumlah > 0;
     }
 
-    // 🔥 Diskon + Pajak
+    // tambahan fitur diskon & pajak
     public function hitungTotal() {
-        $diskon = 0.1 * $this->jumlah;
+        $diskon = $this->jumlah * 0.10;
         $setelahDiskon = $this->jumlah - $diskon;
-
-        $pajak = 0.11 * $setelahDiskon;
+        $pajak = $setelahDiskon * 0.11;
         return $setelahDiskon + $pajak;
     }
 }

@@ -1,9 +1,9 @@
 <?php
-require_once 'transferbank.php';
-require_once 'ewallet.php';
-require_once 'qris.php';
-require_once 'cod.php';
-require_once 'va.php';
+require_once 'TransferBank.php';
+require_once 'Ewallet.php';
+require_once 'QRIS.php';
+require_once 'COD.php';
+require_once 'VirtualAccount.php';
 
 $hasil = "";
 
@@ -11,35 +11,22 @@ if (isset($_POST['submit'])) {
     $jumlah = $_POST['jumlah'];
     $metode = $_POST['metode'];
 
-    switch ($metode) {
-        case "transfer":
-            $obj = new transferbank($jumlah);
-            break;
-        case "ewallet":
-            $obj = new ewallet($jumlah);
-            break;
-        case "qris":
-            $obj = new qris($jumlah);
-            break;
-        case "cod":
-            $obj = new cod($jumlah);
-            break;
-        case "va":
-            $obj = new va($jumlah);
-            break;
-        default:
-            $obj = null;
+    if ($metode == "transfer") {
+        $obj = new TransferBank($jumlah);
+    } elseif ($metode == "ewallet") {
+        $obj = new Ewallet($jumlah);
+    } elseif ($metode == "qris") {
+        $obj = new QRIS($jumlah);
+    } elseif ($metode == "cod") {
+        $obj = new COD($jumlah);
+    } elseif ($metode == "va") {
+        $obj = new VirtualAccount($jumlah);
     }
 
-    if ($obj) {
-        $hasil = $obj->prosespembayaran() . "<br><br>" .
-                 $obj->detail() . "<br><br>" .
-                 $obj->cetakStruk();
-    } else {
-        $hasil = "Metode tidak valid";
-    }
+    $hasil .= $obj->prosesPembayaran();
+    $hasil .= "<br>";
+    $hasil .= $obj->cetakStruk();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -52,10 +39,10 @@ if (isset($_POST['submit'])) {
 <h2>Form Pembayaran</h2>
 
 <form method="POST">
-    Jumlah: <br>
+    <label>Jumlah:</label><br>
     <input type="number" name="jumlah" required><br><br>
 
-    Metode: <br>
+    <label>Metode Pembayaran:</label><br>
     <select name="metode">
         <option value="transfer">Transfer Bank</option>
         <option value="ewallet">E-Wallet</option>
@@ -69,7 +56,7 @@ if (isset($_POST['submit'])) {
 
 <hr>
 
-<h3>hasil:</h3>
+<h3>Hasil:</h3>
 <?php echo $hasil; ?>
 
 </body>
